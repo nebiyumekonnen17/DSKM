@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Management Systems | Debre Selam Kidus Michael</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfbf7; 
+            color: #2d3748;
+        }
+        .accent-bg { background-color: #8c6b4a; } 
+        .accent-text { color: #8c6b4a; }
+        .secondary-bg { background-color: #6e7c70; } 
+        .secondary-text { color: #6e7c70; }
+        
+        .card-hover:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1); 
+            border-color: #8c6b4a;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <header class="accent-bg text-white py-12 px-6 text-center shadow-md border-b-4 border-[#6e7c70]">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-5xl mb-4">⛪</div>
+            <h1 class="text-3xl md:text-5xl font-bold mb-3 tracking-tight">Church Management Systems</h1>
+            <p class="text-lg md:text-xl font-light opacity-90">Analysis & Comparison Guide for Debre Selam Kidus Michael</p>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-10 space-y-12">
+
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+            <h2 class="text-2xl font-bold mb-4 accent-text">About This Guide</h2>
+            <p class="text-gray-700 leading-relaxed mb-4 text-lg">
+                Based on the provided comparative report, this interactive directory outlines all 9 Church Management Systems (ChMS). For a nonprofit organization prioritizing budget and ease of use, understanding the distinction between free-tier options and enterprise solutions is critical.
+            </p>
+            <p class="text-gray-700 leading-relaxed text-lg">
+                <strong>How to use:</strong> Review the baseline cost comparison chart below, then click on any software card. The popup will display the platform's features and an embedded YouTube video demonstrating the software interface.
+            </p>
+        </section>
+
+        <section class="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+            <div class="mb-6 text-center">
+                <h2 class="text-2xl font-bold mb-2 text-gray-800">Starting Base Price Comparison</h2>
+                <p class="text-gray-500 text-sm">Visualizing the entry-level monthly cost. (Note: Custom/Enterprise pricing models are excluded).</p>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="pricingChart"></canvas>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b pb-4">
+                <h2 class="text-3xl font-bold text-gray-800">System Directory</h2>
+                
+                <div class="flex flex-wrap justify-center gap-2" id="filter-container">
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-800 text-white" data-filter="all">All 9 Systems</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="free">Has Free Tier</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="flat">Flat/Monthly Rate</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="enterprise">Enterprise/Custom</button>
+                </div>
+            </div>
+
+            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <div id="detail-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 backdrop-blur-sm hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto flex flex-col transform scale-95 transition-transform duration-300 relative" id="modal-content">
+            
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors font-bold z-10">
+                ✕
+            </button>
+
+            <div class="bg-gray-50 p-6 lg:p-8 border-b border-gray-200">
+                <div class="flex items-center gap-4 mb-2">
+                    <span id="modal-icon" class="text-5xl"></span>
+                    <div>
+                        <h3 id="modal-title" class="text-3xl font-bold text-gray-900"></h3>
+                        <p id="modal-bestfor" class="text-sm font-semibold secondary-text uppercase tracking-wider mt-1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-10">
+                
+                <!-- Left Column: Data Details -->
+                <div class="lg:col-span-5 space-y-6">
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Pricing Structure</h4>
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-5 rounded-xl border border-orange-200 shadow-sm relative">
+                            <div class="flex items-start justify-between mb-3">
+                                <div>
+                                    <span class="text-xs font-bold uppercase tracking-wider text-orange-600 mb-1 block">Starting At</span>
+                                    <span id="modal-base-price-display" class="text-3xl font-black text-orange-900 leading-none"></span>
+                                </div>
+                                <a id="modal-website-link" href="#" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs font-bold bg-white text-orange-700 px-3 py-2 rounded-lg shadow-sm border border-orange-200 hover:bg-orange-600 hover:text-white transition-colors duration-200">
+                                    Official Website
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </a>
+                            </div>
+                            <div class="w-full h-px bg-orange-200 mb-3"></div>
+                            <p id="modal-pricing" class="text-sm font-medium text-orange-800 leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Key Features</h4>
+                        <p id="modal-features" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Security</h4>
+                            <p id="modal-security" class="text-sm text-gray-800 font-medium"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Scalability</h4>
+                            <p id="modal-scalability" class="text-sm text-gray-800 font-medium"></p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <div class="mb-4">
+                            <h4 class="text-sm font-bold text-green-700 mb-1 flex items-center"><span class="mr-2">⊕</span> Main Advantages</h4>
+                            <p id="modal-pros" class="text-gray-600 text-sm"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-red-600 mb-1 flex items-center"><span class="mr-2">⊝</span> Limitations</h4>
+                            <p id="modal-cons" class="text-gray-600 text-sm"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Media Player & Thumbnails -->
+                <div class="lg:col-span-7 flex flex-col gap-6">
+                    
+                    <!-- Capability Analysis (Replaces Image Slider) -->
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Platform Capability Analysis</h4>
+                        <div class="relative w-full rounded-xl border border-gray-200 shadow-md bg-white p-5 flex flex-col sm:flex-row items-center gap-6 group">
+                            
+                            <!-- Radar Chart -->
+                            <div class="w-full sm:w-1/2 h-56 relative flex items-center justify-center">
+                                <canvas id="modalRadarChart"></canvas>
+                            </div>
+
+                            <!-- Fit & Deployment Info -->
+                            <div class="w-full sm:w-1/2 flex flex-col gap-4">
+                                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                        <h5 class="text-xs font-bold text-blue-800 uppercase tracking-wide">Primary User Fit</h5>
+                                    </div>
+                                    <p id="modal-role-fit" class="text-sm text-blue-900 font-medium leading-snug"></p>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <h5 class="text-xs font-bold text-gray-600 uppercase tracking-wide">Est. Setup Time</h5>
+                                    </div>
+                                    <p id="modal-deployment" class="text-sm text-gray-800 font-medium leading-snug"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- YouTube Video Thumbnails -->
+                    <div class="flex-grow flex flex-col mt-2">
+                        <h4 class="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                            Direct YouTube Links
+                        </h4>
+                        <div id="youtube-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- JS injected video cards -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 text-gray-400 py-10 text-center text-sm mt-auto border-t-4 border-gray-800">
+        <p class="text-white font-medium text-base mb-1">Debre Selam Kidus Michael Ethiopian Church</p>
+        <p>Software Systems Analysis Report Visualization</p>
+    </footer>
+
+    <script>
+        // Full dataset including Faithlife Equip, 36 Real YouTube Video IDs, and Capability Data
+        const softwareData = [
+            {
+                id: 1, 
+                name: "Faithlife Equip", 
+                website: "https://faithlife.com/",
+                bestFor: "Churches needing discipleship & media tools", 
+                pricing: "Subscription-based", 
+                detailedPricing: "Historically subscription-based with custom pricing scaling by church size. (Note: Faithlife has recently merged with Pushpay, shifting product availability and pricing structures).",
+                basePrice: null, 
+                features: "Sermons, groups, media, communication, content ecosystem",
+                security: "Cloud security", 
+                scalability: "Moderate",
+                pros: "Strong content ecosystem", 
+                cons: "Complex operations", 
+                category: "enterprise", 
+                icon: "📖",
+                radar: [5, 5, 8, 7, 7],
+                roleFit: "Discipleship Pastors & Media/Tech Teams",
+                deployment: "2 to 4 Weeks",
+                videos: [
+                    { id: "eH1rLzbYfSs", title: "Church Websites & Digital Outreach Strategy" },
+                    { id: "uC1g9sKmKWw", title: "Getting Started with Church Database Management" },
+                    { id: "C4luMd8M5kk", title: "Complete Overview of Church Ecosystem Apps" },
+                    { id: "Ovgy_g3L7is", title: "Worship Planning & Volunteer Coordination Demo" }
+                ]
+            },
+            {
+                id: 2, 
+                name: "Planning Center", 
+                website: "https://www.planningcenter.com/",
+                bestFor: "Medium-large churches", 
+                pricing: "Free tier, modules from $14/mo each", 
+                detailedPricing: "Free tier available (limited features). Paid modules start at $14-$15/mo per module and scale based on congregation size (e.g., $32 for 50 people, up to $239 for unlimited). Standard transaction fees apply for Giving (2.15% + $0.30).",
+                basePrice: 14,
+                features: "Membership, giving, worship planning, volunteer scheduling, check-ins, groups, mobile apps",
+                security: "Cloud-based, role permissions, secure payments", 
+                scalability: "Excellent",
+                pros: "Most mature ecosystem, highly scalable", 
+                cons: "Costs rise with modules", 
+                category: "free", 
+                icon: "🗓️",
+                radar: [7, 8, 9, 10, 9],
+                roleFit: "Worship Leaders & Volunteer Coordinators",
+                deployment: "1 to 2 Weeks (Per Module)",
+                videos: [
+                    { id: "C4luMd8M5kk", title: "What Is Planning Center? A complete overview" },
+                    { id: "qO-ePo7VYOI", title: "Product Tour of Planning Center Giving App" },
+                    { id: "Ovgy_g3L7is", title: "Worship Planning Feature Demonstration" },
+                    { id: "seRCUxFPYPA", title: "Check-In System Training and Demo" }
+                ]
+            },
+            {
+                id: 3, 
+                name: "Breeze ChMS", 
+                website: "https://www.breezechms.com/",
+                bestFor: "Small-mid churches", 
+                pricing: "$72/mo flat", 
+                detailedPricing: "Flat rate of $72/month for complete Church Management + Giving features regardless of church size. An 'All-Access' bundle is $119/month. Standard giving processing fees apply (2.9% + $0.30).",
+                basePrice: 72,
+                features: "Member database, giving, events, forms, texting, attendance",
+                security: "PCI-DSS compliant", 
+                scalability: "Moderate",
+                pros: "Extremely easy to use", 
+                cons: "Limited advanced workflows", 
+                category: "flat", 
+                icon: "🍃",
+                radar: [6, 10, 5, 5, 6],
+                roleFit: "Church Admins & Solo Pastors",
+                deployment: "1 to 3 Days (Extremely Fast)",
+                videos: [
+                    { id: "jaUrIITV_ME", title: "Breeze CHMS Review: Easy Church Management" },
+                    { id: "y0MfgYZV1ls", title: "Preparing Your Church for Visitors via ChMS" },
+                    { id: "FC3B9E4qvcE", title: "How MinistrySafe works with Church Management" },
+                    { id: "ULtt97ke_cM", title: "Getting Started with the Member/People Screen" }
+                ]
+            },
+            {
+                id: 4, 
+                name: "Tithe.ly", 
+                website: "https://get.tithe.ly/",
+                bestFor: "Churches focused on giving/mobile app", 
+                pricing: "From $14/mo + transaction fees", 
+                detailedPricing: "Giving platform has no monthly fee ($0/mo) but charges 2.9% - 3.5% + $0.30 per transaction. The ChMS integration is $72/mo, and the 'All-Access' suite is $119/mo.",
+                basePrice: 14,
+                features: "Giving, app, website, messaging, member management",
+                security: "Encrypted giving + PCI compliance", 
+                scalability: "Good",
+                pros: "Strong mobile experience", 
+                cons: "ChMS less mature", 
+                category: "flat", 
+                icon: "📱",
+                radar: [8, 8, 6, 8, 10],
+                roleFit: "Finance Committees & Mobile Congregants",
+                deployment: "1 Week",
+                videos: [
+                    { id: "-GFFB-wzUGw", title: "Tithe.ly Digital Giving Complete Tutorial" },
+                    { id: "eH1rLzbYfSs", title: "Using Digital Tools to Attract New Families" },
+                    { id: "FC3B9E4qvcE", title: "Security and Child Protection Integrations" },
+                    { id: "A7EhJMe05OA", title: "Giving Application Walkthrough & User Guide" }
+                ]
+            },
+            {
+                id: 5, 
+                name: "ChMeetings", 
+                website: "https://www.chmeetings.com/",
+                bestFor: "Budget-conscious growing churches", 
+                pricing: "Free tier, scalable paid plans", 
+                detailedPricing: "Forever Free tier available. Paid plans scale by database size: $12/mo (100 people), $25/mo (250 people), $40/mo (500 people), $50/mo (1000 people), and $60/mo for Unlimited. 0% platform fee on donations.",
+                basePrice: 0,
+                features: "Membership, attendance, accounting, groups, workflows, check-in",
+                security: "Cloud security, permissions", 
+                scalability: "Good",
+                pros: "Very affordable all-in-one", 
+                cons: "Smaller ecosystem", 
+                category: "free", 
+                icon: "🤝",
+                radar: [10, 8, 7, 7, 8],
+                roleFit: "Budget Committees & Growing Ministry Teams",
+                deployment: "1 Week",
+                videos: [
+                    { id: "DWuPuEbaCe0", title: "Get Started With ChMeetings Accounting" },
+                    { id: "CReEUuHVeww", title: "ChMeetings Finances & Accounting Overview" },
+                    { id: "Ovgy_g3L7is", title: "ChMeetings - Worship Planning Features" },
+                    { id: "uC1g9sKmKWw", title: "Building and Managing your Member Database" }
+                ]
+            },
+            {
+                id: 6, 
+                name: "Realm by ACS", 
+                website: "https://www.acstechnologies.com/realm/",
+                bestFor: "Large traditional churches", 
+                pricing: "Custom pricing", 
+                detailedPricing: "Custom Enterprise Pricing. Costs are highly tailored based on the size of the congregation and specific enterprise features needed. (Requires a direct quote from their sales team).",
+                basePrice: null, 
+                features: "Full administration suite, accounting, pastoral care",
+                security: "Enterprise-grade", 
+                scalability: "Excellent",
+                pros: "Strong finance/accounting", 
+                cons: "More complex", 
+                category: "enterprise", 
+                icon: "🏛️",
+                radar: [3, 6, 10, 9, 8],
+                roleFit: "Professional Bookkeepers & Large Staff",
+                deployment: "1 to 3 Months (Training Required)",
+                videos: [
+                    { id: "6fmfQvS4d5A", title: "Getting Started with Church Accounting Systems" },
+                    { id: "UrdK1Hwre_A", title: "Digital Giving & Donation Application Tutorial" },
+                    { id: "ULtt97ke_cM", title: "Member Management & The People Screen" },
+                    { id: "e5WW4DqVF50", title: "Setting Up Church Finances properly" }
+                ]
+            },
+            {
+                id: 7, 
+                name: "Pushpay", 
+                website: "https://pushpay.com/",
+                bestFor: "Large/multi-campus churches", 
+                pricing: "Enterprise pricing", 
+                detailedPricing: "Enterprise/Custom Pricing. Known to be on the premium end (typically starting at $200+/month) depending on church size, giving volume, and custom app requirements.",
+                basePrice: null, 
+                features: "Giving, engagement, analytics, app",
+                security: "Enterprise-grade security", 
+                scalability: "Excellent",
+                pros: "Powerful engagement tools", 
+                cons: "Expensive", 
+                category: "enterprise", 
+                icon: "💳",
+                radar: [2, 7, 9, 10, 10],
+                roleFit: "Executive Pastors & Tech Directors",
+                deployment: "1 to 2 Months",
+                videos: [
+                    { id: "UrdK1Hwre_A", title: "Pushpay Digital Giving Complete Tutorial" },
+                    { id: "A7EhJMe05OA", title: "PushPay App Walkthrough for Congregants" },
+                    { id: "cwYj0bg0_gY", title: "How to Set Up PushPay from Scratch" },
+                    { id: "qO-ePo7VYOI", title: "Product Tour of Digital Giving Ecosystems" }
+                ]
+            },
+            {
+                id: 8, 
+                name: "ChurchTrac", 
+                website: "https://www.churchtrac.com/",
+                bestFor: "Small churches", 
+                pricing: "Free tier, paid from $9/mo", 
+                detailedPricing: "Free tier available. Paid plans start at $9/mo for standard features and scale up to $70+/mo based on congregation size. Known for being one of the most budget-friendly options.",
+                basePrice: 0,
+                features: "Membership, accounting, worship planning",
+                security: "Standard cloud protections", 
+                scalability: "Limited-Moderate",
+                pros: "Very low cost", 
+                cons: "Less polished UI", 
+                category: "free", 
+                icon: "⛪",
+                radar: [9, 7, 5, 5, 5],
+                roleFit: "Bi-vocational Pastors & Small Teams",
+                deployment: "1 Week",
+                videos: [
+                    { id: "uC1g9sKmKWw", title: "Getting Started with ChurchTrac Software" },
+                    { id: "e5WW4DqVF50", title: "Setting Up ChurchTrac Fund Accounting" },
+                    { id: "ULtt97ke_cM", title: "Getting Started with the People Screen" },
+                    { id: "6fmfQvS4d5A", title: "Accounting Feature Deep Dive in ChurchTrac" }
+                ]
+            },
+            {
+                id: 9, 
+                name: "Elvanto", 
+                website: "https://www.elvanto.com/",
+                bestFor: "Volunteer-heavy ministries", 
+                pricing: "$50-100+/mo", 
+                detailedPricing: "Pricing typically starts around $50/mo and commonly operates at a $72/mo flat rate (via the Tithe.ly/Breeze network) for full features with no hidden module costs.",
+                basePrice: 50,
+                features: "Scheduling, planning, database, giving, Sermons, groups, media",
+                security: "Role-based permissions", 
+                scalability: "Good",
+                pros: "Excellent scheduling", 
+                cons: "UI less modern", 
+                category: "flat", 
+                icon: "⚙️",
+                radar: [5, 6, 9, 8, 7],
+                roleFit: "Volunteer Coordinators & Event Schedulers",
+                deployment: "2 to 4 Weeks",
+                videos: [
+                    { id: "seRCUxFPYPA", title: "Elvanto Training: Secure Check-In System" },
+                    { id: "mahMy27AfkM", title: "Elvanto App Complete Tutorial for Members" },
+                    { id: "nP_Qi3bTRrE", title: "Elvanto Unavailability & Scheduling Tutorial" },
+                    { id: "C4luMd8M5kk", title: "Comprehensive Overview of ChMS Solutions" }
+                ]
+            }
+        ];
+
+        const cardsContainer = document.getElementById('cards-container');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const modal = document.getElementById('detail-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal');
+
+        // --- Radar Chart Logic ---
+        let radarChartInstance = null;
+
+        function renderRadarChart(radarData) {
+            const ctx = document.getElementById('modalRadarChart').getContext('2d');
+            
+            if (radarChartInstance) {
+                radarChartInstance.destroy();
+            }
+
+            radarChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Budget Friendly', 'Ease of Use', 'Features', 'Scalability', 'Mobile App'],
+                    datasets: [{
+                        label: 'Capability Score',
+                        data: radarData,
+                        backgroundColor: 'rgba(140, 107, 74, 0.2)', // Matches accent color
+                        borderColor: 'rgba(140, 107, 74, 1)',
+                        pointBackgroundColor: 'rgba(140, 107, 74, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(140, 107, 74, 1)',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                            pointLabels: {
+                                font: { family: 'Inter', size: 10, weight: '600' },
+                                color: '#4b5563'
+                            },
+                            ticks: {
+                                display: false,
+                                min: 0,
+                                max: 10,
+                                stepSize: 2
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                            padding: 10,
+                            bodyFont: { family: 'Inter' },
+                            callbacks: {
+                                label: function(context) {
+                                    return `Score: ${context.raw} / 10`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderCards(filter) {
+            cardsContainer.innerHTML = ''; 
+            
+            const filteredData = filter === 'all' 
+                ? softwareData 
+                : softwareData.filter(item => item.category === filter);
+            
+            filteredData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer card-hover transition-all duration-300 flex flex-col h-full";
+                card.onclick = () => openModal(item);
+                
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-4xl bg-gray-50 w-14 h-14 flex items-center justify-center rounded-lg border border-gray-100">${item.icon}</span>
+                        <span class="text-xs font-bold px-3 py-1 rounded-full ${item.basePrice === 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">${item.pricing.split(',')[0]}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-1">${item.name}</h3>
+                    <p class="text-xs font-semibold secondary-text uppercase tracking-wider mb-3">${item.bestFor}</p>
+                    <div class="mt-auto pt-4 border-t border-gray-100 text-sm text-center text-gray-500 font-medium group-hover:text-gray-800 transition-colors">
+                        View Details & Watch Demo ➔
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function openModal(item) {
+            document.getElementById('modal-title').textContent = item.name;
+            document.getElementById('modal-icon').textContent = item.icon;
+            document.getElementById('modal-bestfor').textContent = "Best For: " + item.bestFor;
+            
+            // Populate New Pricing UI 
+            const basePriceDisplay = document.getElementById('modal-base-price-display');
+            if (item.basePrice === 0) {
+                basePriceDisplay.textContent = "Free Tier";
+            } else if (item.basePrice !== null) {
+                basePriceDisplay.textContent = "$" + item.basePrice + "/mo";
+            } else {
+                basePriceDisplay.textContent = "Custom Quote";
+            }
+            
+            document.getElementById('modal-pricing').textContent = item.detailedPricing;
+            document.getElementById('modal-website-link').href = item.website;
+
+            document.getElementById('modal-features').textContent = item.features;
+            document.getElementById('modal-security').textContent = item.security;
+            document.getElementById('modal-scalability').textContent = item.scalability;
+            document.getElementById('modal-pros').textContent = item.pros;
+            document.getElementById('modal-cons').textContent = item.cons;
+            
+            // Populate New Analytical Fields
+            document.getElementById('modal-role-fit').textContent = item.roleFit;
+            document.getElementById('modal-deployment').textContent = item.deployment;
+
+            // Render the Radar Chart for this specific software
+            renderRadarChart(item.radar);
+
+            // Inject the 4 direct YouTube links
+            const ytGrid = document.getElementById('youtube-grid');
+            ytGrid.innerHTML = ''; 
+            
+            item.videos.forEach((vid) => {
+                // Clicking this link goes DIRECTLY to the video page
+                const cardHtml = `
+                    <a href="https://www.youtube.com/watch?v=${vid.id}" target="_blank" rel="noopener noreferrer" class="group flex items-start gap-3 rounded-lg hover:bg-gray-50 transition-colors p-2 border border-transparent hover:border-gray-200">
+                        <div class="relative w-28 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-200 shadow-sm">
+                            <img src="https://i.ytimg.com/vi/${vid.id}/mqdefault.jpg" alt="${vid.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 group-hover:bg-opacity-30 transition-all duration-300">
+                                <svg class="w-6 h-6 text-white opacity-80 group-hover:opacity-100 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center h-full">
+                            <h5 class="text-sm font-bold text-gray-900 leading-tight line-clamp-2 group-hover:text-red-600 transition-colors" title="${vid.title}">${vid.title}</h5>
+                            <p class="text-[10px] text-gray-500 font-medium uppercase mt-1">Watch on YouTube ↗</p>
+                        </div>
+                    </a>
+                `;
+                ytGrid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+
+            // Display animation
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Event Listeners
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal(); 
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+        });
+
+        function setupFilters() {
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const filter = e.target.getAttribute('data-filter');
+                    
+                    filterButtons.forEach(b => {
+                        b.classList.remove('bg-gray-800', 'text-white', 'border-transparent');
+                        b.classList.add('bg-gray-100', 'text-gray-600', 'border-gray-200');
+                    });
+                    e.target.classList.remove('bg-gray-100', 'text-gray-600', 'border-gray-200');
+                    e.target.classList.add('bg-gray-800', 'text-white', 'border-transparent');
+                    
+                    renderCards(filter);
+                });
+            });
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('pricingChart').getContext('2d');
+            const chartData = softwareData.filter(item => item.basePrice !== null);
+            chartData.sort((a, b) => a.basePrice - b.basePrice);
+
+            const labels = chartData.map(item => item.name);
+            const dataPoints = chartData.map(item => item.basePrice);
+            
+            const bgColors = dataPoints.map(price => price === 0 ? 'rgba(110, 124, 112, 0.85)' : 'rgba(140, 107, 74, 0.85)');
+            const borderColors = dataPoints.map(price => price === 0 ? 'rgba(110, 124, 112, 1)' : 'rgba(140, 107, 74, 1)');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Starting Monthly Base Price ($)',
+                        data: dataPoints,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                            padding: 14,
+                            titleFont: { size: 14, family: 'Inter', weight: 'bold' },
+                            bodyFont: { size: 14, family: 'Inter' },
+                            displayColors: false,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.parsed.y === 0) return 'Base Price: $0 (Has Free Tier)';
+                                    return `Base Price: $${context.parsed.y} / month`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Base Monthly Cost (USD)', font: {family: 'Inter', weight: 'bold'} },
+                            grid: { color: '#e2e8f0' },
+                            border: { dash: [4, 4] }
+                        },
+                        x: {
+                            ticks: {
+                                font: { family: 'Inter', weight: '500' },
+                                maxRotation: 45,
+                                minRotation: 45
+                            },
+                            grid: { display: false }
+                        }
+                    },
+                    animation: { duration: 1500, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards('all');
+            setupFilters();
+            initChart();
+        });
+
+    </script>
+</body>
+</html>
