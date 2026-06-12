@@ -82,15 +82,18 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 border-b pb-4">
                 <h2 class="text-3xl font-bold text-gray-800">System Directory</h2>
                 
+                <!-- Filters -->
                 <div class="flex flex-wrap justify-center gap-2" id="filter-container">
-                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-800 text-white" data-filter="all">All 9 Systems</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-800 text-white" data-filter="all">All Systems</button>
+                    <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="criteria">✨ Meets 8-Point Criteria</button>
                     <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="free">Has Free Tier</button>
                     <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="flat">Flat/Monthly Rate</button>
                     <button class="filter-btn px-5 py-2 rounded-full text-sm font-semibold transition-colors duration-200 bg-gray-100 text-gray-600 hover:bg-gray-200 border border-gray-200" data-filter="enterprise">Enterprise/Custom</button>
                 </div>
             </div>
 
-            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Software Cards Grid -->
+            <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
                 <!-- Cards injected via JS -->
             </div>
         </section>
@@ -141,14 +144,22 @@
                         <p id="modal-features" class="text-gray-700 leading-relaxed"></p>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Security</h4>
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Security & Portability</h4>
                             <p id="modal-security" class="text-sm text-gray-800 font-medium"></p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Scalability</h4>
-                            <p id="modal-scalability" class="text-sm text-gray-800 font-medium"></p>
+                            <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Integrations</h4>
+                            <p id="modal-integrations" class="text-sm text-gray-800 font-medium"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <h4 class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">Member Portal</h4>
+                            <p id="modal-memberportal" class="text-sm text-gray-800 font-medium"></p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <h4 class="text-xs font-bold text-purple-600 uppercase tracking-widest mb-1">AI & Automation</h4>
+                            <p id="modal-ai" class="text-sm text-gray-800 font-medium"></p>
                         </div>
                     </div>
 
@@ -219,7 +230,7 @@
     </footer>
 
     <script>
-        // Full dataset including Faithlife Equip, 36 Real YouTube Video IDs, and Capability Data
+        // Full dataset including Faithlife Equip, 36 Real YouTube Video IDs, Capability Data, and Advanced 8-Point Criteria
         const softwareData = [
             {
                 id: 1, 
@@ -230,10 +241,14 @@
                 detailedPricing: "Historically subscription-based with custom pricing scaling by church size. (Note: Faithlife has recently merged with Pushpay, shifting product availability and pricing structures).",
                 basePrice: null, 
                 features: "Sermons, groups, media, communication, content ecosystem",
-                security: "Cloud security", 
+                security: "Cloud security. Export tools available but lock-in risk due to merger.", 
+                integrations: "Basic CSV exports. QuickBooks via Zapier.",
+                memberPortal: "Yes (Faithlife Web Portal).",
+                ai: "None native. Lacks modern predictive analytics.",
+                meetsCriteria: false,
                 scalability: "Moderate",
                 pros: "Strong content ecosystem", 
-                cons: "Complex operations", 
+                cons: "Complex operations, high vendor transition risk", 
                 category: "enterprise", 
                 icon: "📖",
                 radar: [5, 5, 8, 7, 7],
@@ -255,9 +270,13 @@
                 detailedPricing: "Free tier available (limited features). Paid modules start at $14-$15/mo per module and scale based on congregation size (e.g., $32 for 50 people, up to $239 for unlimited). Standard transaction fees apply for Giving (2.15% + $0.30).",
                 basePrice: 14,
                 features: "Membership, giving, worship planning, volunteer scheduling, check-ins, groups, mobile apps",
-                security: "Cloud-based, role permissions, secure payments", 
+                security: "Enterprise-grade AWS security. High data portability via Open API.", 
+                integrations: "Native QuickBooks Online sync, Mailchimp, Zapier, Stripe.",
+                memberPortal: "Excellent (Church Center App & Web portal for members to update info).",
+                ai: "Advanced automated workflows, smart scheduling, predictive reporting.",
+                meetsCriteria: true,
                 scalability: "Excellent",
-                pros: "Most mature ecosystem, highly scalable", 
+                pros: "Most mature ecosystem, highly scalable, zero vendor lock-in", 
                 cons: "Costs rise with modules", 
                 category: "free", 
                 icon: "🗓️",
@@ -280,10 +299,14 @@
                 detailedPricing: "Flat rate of $72/month for complete Church Management + Giving features regardless of church size. An 'All-Access' bundle is $119/month. Standard giving processing fees apply (2.9% + $0.30).",
                 basePrice: 72,
                 features: "Member database, giving, events, forms, texting, attendance",
-                security: "PCI-DSS compliant", 
+                security: "PCI-DSS compliant. Standard backups.", 
+                integrations: "Direct QuickBooks integration, Mailchimp.",
+                memberPortal: "Yes (Basic member directory and profile editing).",
+                ai: "Minimal. Lacks AI predictive analytics and deep workflow automation.",
+                meetsCriteria: false,
                 scalability: "Moderate",
                 pros: "Extremely easy to use", 
-                cons: "Limited advanced workflows", 
+                cons: "Limited advanced workflows & customizability", 
                 category: "flat", 
                 icon: "🍃",
                 radar: [6, 10, 5, 5, 6],
@@ -305,10 +328,14 @@
                 detailedPricing: "Giving platform has no monthly fee ($0/mo) but charges 2.9% - 3.5% + $0.30 per transaction. The ChMS integration is $72/mo, and the 'All-Access' suite is $119/mo.",
                 basePrice: 14,
                 features: "Giving, app, website, messaging, member management",
-                security: "Encrypted giving + PCI compliance", 
+                security: "Encrypted giving + PCI compliance.", 
+                integrations: "QuickBooks integration available. Native email/SMS.",
+                memberPortal: "Yes (Strong custom mobile app experience).",
+                ai: "Basic reporting. Lacks extensible API automation.",
+                meetsCriteria: false,
                 scalability: "Good",
                 pros: "Strong mobile experience", 
-                cons: "ChMS less mature", 
+                cons: "ChMS less mature than competitors", 
                 category: "flat", 
                 icon: "📱",
                 radar: [8, 8, 6, 8, 10],
@@ -330,10 +357,14 @@
                 detailedPricing: "Forever Free tier available. Paid plans scale by database size: $12/mo (100 people), $25/mo (250 people), $40/mo (500 people), $50/mo (1000 people), and $60/mo for Unlimited. 0% platform fee on donations.",
                 basePrice: 0,
                 features: "Membership, attendance, accounting, groups, workflows, check-in",
-                security: "Cloud security, permissions", 
+                security: "Cloud security, role permissions. GDPR compliant.", 
+                integrations: "Stripe, PayPal, Mailchimp. Requires Zapier for QuickBooks.",
+                memberPortal: "Yes (Members can log in via app to update profiles).",
+                ai: "None. Strictly functional features.",
+                meetsCriteria: false,
                 scalability: "Good",
                 pros: "Very affordable all-in-one", 
-                cons: "Smaller ecosystem", 
+                cons: "Smaller ecosystem, basic extensibility", 
                 category: "free", 
                 icon: "🤝",
                 radar: [10, 8, 7, 7, 8],
@@ -355,10 +386,14 @@
                 detailedPricing: "Custom Enterprise Pricing. Costs are highly tailored based on the size of the congregation and specific enterprise features needed. (Requires a direct quote from their sales team).",
                 basePrice: null, 
                 features: "Full administration suite, accounting, pastoral care",
-                security: "Enterprise-grade", 
+                security: "Enterprise-grade. Comprehensive audit logging and roles.", 
+                integrations: "Native Ledger Accounting (Can completely replace QuickBooks).",
+                memberPortal: "Yes (Realm Connect app for profiles and giving).",
+                ai: "Predictive giving insights and automated pastoral care workflows.",
+                meetsCriteria: true,
                 scalability: "Excellent",
-                pros: "Strong finance/accounting", 
-                cons: "More complex", 
+                pros: "Strong finance/accounting, high security", 
+                cons: "More complex implementation", 
                 category: "enterprise", 
                 icon: "🏛️",
                 radar: [3, 6, 10, 9, 8],
@@ -380,10 +415,14 @@
                 detailedPricing: "Enterprise/Custom Pricing. Known to be on the premium end (typically starting at $200+/month) depending on church size, giving volume, and custom app requirements.",
                 basePrice: null, 
                 features: "Giving, engagement, analytics, app",
-                security: "Enterprise-grade security", 
+                security: "Enterprise-grade security. Top-tier data privacy policies.", 
+                integrations: "Direct QuickBooks Online integration, Sage Intacct, Open API.",
+                memberPortal: "Yes (Custom-branded church app and web portals).",
+                ai: "Machine Learning (ML) for giving trends and donor churn prediction.",
+                meetsCriteria: true,
                 scalability: "Excellent",
-                pros: "Powerful engagement tools", 
-                cons: "Expensive", 
+                pros: "Powerful engagement tools, AI analytics", 
+                cons: "Expensive, highest TCO", 
                 category: "enterprise", 
                 icon: "💳",
                 radar: [2, 7, 9, 10, 10],
@@ -405,10 +444,14 @@
                 detailedPricing: "Free tier available. Paid plans start at $9/mo for standard features and scale up to $70+/mo based on congregation size. Known for being one of the most budget-friendly options.",
                 basePrice: 0,
                 features: "Membership, accounting, worship planning",
-                security: "Standard cloud protections", 
+                security: "Standard cloud protections.", 
+                integrations: "Accounting requires CSV export to QuickBooks.",
+                memberPortal: "Yes (Church Connect web portal).",
+                ai: "None.",
+                meetsCriteria: false,
                 scalability: "Limited-Moderate",
                 pros: "Very low cost", 
-                cons: "Less polished UI", 
+                cons: "Less polished UI, poor extensibility", 
                 category: "free", 
                 icon: "⛪",
                 radar: [9, 7, 5, 5, 5],
@@ -430,10 +473,14 @@
                 detailedPricing: "Pricing typically starts around $50/mo and commonly operates at a $72/mo flat rate (via the Tithe.ly/Breeze network) for full features with no hidden module costs.",
                 basePrice: 50,
                 features: "Scheduling, planning, database, giving, Sermons, groups, media",
-                security: "Role-based permissions", 
+                security: "Role-based permissions.", 
+                integrations: "Syncs with Tithe.ly giving. QuickBooks via 3rd party.",
+                memberPortal: "Yes (Members can manage schedules and profiles).",
+                ai: "Basic scheduling automations.",
+                meetsCriteria: false,
                 scalability: "Good",
-                pros: "Excellent scheduling", 
-                cons: "UI less modern", 
+                pros: "Excellent scheduling flexibility", 
+                cons: "UI less modern, limited AI", 
                 category: "flat", 
                 icon: "⚙️",
                 radar: [5, 6, 9, 8, 7],
@@ -519,22 +566,31 @@
         function renderCards(filter) {
             cardsContainer.innerHTML = ''; 
             
-            const filteredData = filter === 'all' 
-                ? softwareData 
-                : softwareData.filter(item => item.category === filter);
+            let filteredData = softwareData;
+            
+            if (filter === 'criteria') {
+                filteredData = softwareData.filter(item => item.meetsCriteria);
+            } else if (filter === 'enterprise') {
+                filteredData = softwareData.filter(item => item.category === 'enterprise' || item.meetsCriteria);
+            } else if (filter !== 'all') {
+                filteredData = softwareData.filter(item => item.category === filter);
+            }
             
             filteredData.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "bg-white rounded-xl shadow-sm border border-gray-200 p-6 cursor-pointer card-hover transition-all duration-300 flex flex-col h-full";
                 card.onclick = () => openModal(item);
                 
+                const badgeHtml = item.meetsCriteria ? `<div class="mt-2 inline-block bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded border border-blue-200">✨ Meets 8-Point Criteria</div>` : '';
+
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-4xl bg-gray-50 w-14 h-14 flex items-center justify-center rounded-lg border border-gray-100">${item.icon}</span>
                         <span class="text-xs font-bold px-3 py-1 rounded-full ${item.basePrice === 0 ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">${item.pricing.split(',')[0]}</span>
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-1">${item.name}</h3>
-                    <p class="text-xs font-semibold secondary-text uppercase tracking-wider mb-3">${item.bestFor}</p>
+                    <p class="text-xs font-semibold secondary-text uppercase tracking-wider mb-1">${item.bestFor}</p>
+                    ${badgeHtml}
                     <div class="mt-auto pt-4 border-t border-gray-100 text-sm text-center text-gray-500 font-medium group-hover:text-gray-800 transition-colors">
                         View Details & Watch Demo ➔
                     </div>
@@ -563,7 +619,12 @@
 
             document.getElementById('modal-features').textContent = item.features;
             document.getElementById('modal-security').textContent = item.security;
-            document.getElementById('modal-scalability').textContent = item.scalability;
+            
+            // New Advanced Criteria Fields
+            document.getElementById('modal-integrations').textContent = item.integrations;
+            document.getElementById('modal-memberportal').textContent = item.memberPortal;
+            document.getElementById('modal-ai').textContent = item.ai;
+            
             document.getElementById('modal-pros').textContent = item.pros;
             document.getElementById('modal-cons').textContent = item.cons;
             
